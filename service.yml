@@ -12,29 +12,17 @@ spec:
     targetPort: 8080 
     protocol: TCP
   - name: agent
-    port: 50000 # used by inbound (formerly known as “JNLP”) agents
+    port: 50000 # used by inbound agents
     protocol: TCP
-  template:
-    metadata:
-      labels:
-        app: nginx # has to match .spec.selector.matchLabels
-    spec:
-      terminationGracePeriodSeconds: 10
-      containers:
-      - name: nginx
-        image: registry.k8s.io/nginx-slim:0.8
-        ports:
-        - containerPort: 80
-          name: web
-        volumeMounts:
-        - name: www
-          mountPath: /usr/share/nginx/html
-  volumeClaimTemplates:
-  - metadata:
-      name: www
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      storageClassName: "my-storage-class"
-      resources:
-        requests:
-          storage: 1Gi
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: jenkins-home
+spec:
+  accessModes: [ "ReadWriteOnce" ]
+  resources:
+    requests:
+      storage: 8Gi
+  

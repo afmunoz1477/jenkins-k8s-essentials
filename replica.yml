@@ -9,7 +9,20 @@ spec:
       app: jenkins
   serviceName: jenkins
   replicas: 1
-  containers:
-  - name: jenkins
-    image: jenkins/jenkins:lts-alpine
-    imagePullPolicy: Always
+  template:
+    metadata:
+      labels:
+        app: jenkins # has to match .spec.selector.matchLabels
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: jenkins
+        image: jenkins/jenkins:lts-alpine
+        imagePullPolicy: Always
+        resources:
+          limits:
+            cpu: "4"
+            memory: "8Gi"
+          requests:
+            cpu: "1"
+            memory: "500Mi"
